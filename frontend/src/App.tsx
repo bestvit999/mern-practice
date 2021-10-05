@@ -84,14 +84,35 @@ function App() {
                               price : price
                             }
                             setItemIndex(itemIndex+1)
-                            nodeService.postItem(newItem)
+                            nodeService.postItem(newItem).then( data => console.log(data))
                         }}/>
                         <Button type="button" label="query name1 group1" onClick={ () => {
                             let query = {
-                              name : "name1",
                               groupId : "group1"
                             }
-                            nodeService.getItemQuery(query)
+                            nodeService.getItemQuery(query).then( data => {
+                              // combine same name, summary the order number
+                              type holder = {
+                                [key: string]: number
+                              }
+                              var holderMap : holder = {}
+
+                              data.forEach(function(d) {
+                                console.log("d.name", d.name)
+                                if (holderMap.hasOwnProperty(d.name)) {
+                                  holderMap[d.name] = holderMap[d.name] + d.number;
+                                } else {
+                                  holderMap[d.name] = d.number;
+                                }
+                              });
+
+                              var combinedOrderHistory = [];
+                              for (var prop in holderMap) {
+                                combinedOrderHistory.push({ name: prop, number: holderMap[prop] });
+                              }
+
+                              console.log("combinedOrderHistory", combinedOrderHistory);
+                            })
                         }}/>
                         <Button type="button" label="query name2 group1" onClick={ () => {
                             let query = {
