@@ -6,6 +6,10 @@ import { IGroup, IItem } from './types/objectTypes'
 import { ListBox } from 'primereact/listbox';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import {InputText} from 'primereact/inputtext';
+import {InputNumber} from 'primereact/inputnumber'
+import {Button} from 'primereact/button';
+
 function App() {
   
   let nodeService = new nodeServiceImplement ()
@@ -15,6 +19,10 @@ function App() {
   const [groupItems, setGroupItems] = useState<Array<IItem>>([])
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const [name, setName] = useState<string>('name1');
+  const [price, setPrice] = useState<number>(50);
+  const [itemIndex, setItemIndex] = useState<number>(1)
 
   const getAllData = () => {
     nodeService.getGroups().then( (data) => { setGroups(data) } )
@@ -32,7 +40,6 @@ function App() {
     obj.shopName = group.shop.name
     return obj
   })
-
 
   return (
     <div className="App">
@@ -59,7 +66,42 @@ function App() {
                     </DataTable>
                 </div>
               </div>
-              <div className="p-col">3</div>
+              <div className="p-col">
+              <h5>Inline</h5>
+                    <div className="p-formgroup-inline">
+                        <div className="p-field">
+                            <InputText id="name" value={name} onChange={(e) => setName(e.target.value)}  placeholder="Name" />
+                        </div>
+                        <div className="p-field">
+                            <InputNumber id="price" value={price} onChange={(e) => setPrice(e.value)}  placeholder="Price"/>
+                        </div>
+                        <Button type="button" label="Submit" onClick={ () => {
+                            let newItem : IItem = {
+                              id : `item${itemIndex}`,
+                              groupId : "group1",
+                              name : name,
+                              number : 1,
+                              price : price
+                            }
+                            setItemIndex(itemIndex+1)
+                            nodeService.postItem(newItem)
+                        }}/>
+                        <Button type="button" label="query name1 group1" onClick={ () => {
+                            let query = {
+                              name : "name1",
+                              groupId : "group1"
+                            }
+                            nodeService.getItemQuery(query)
+                        }}/>
+                        <Button type="button" label="query name2 group1" onClick={ () => {
+                            let query = {
+                              name : "name2",
+                              groupId : "group1"
+                            }
+                            nodeService.getItemQuery(query)
+                        }}/>
+                    </div>
+              </div>
             </div>
           </div>
           <div className="p-col-6">

@@ -34,9 +34,26 @@ export function MockServer({ environment = "development" }) {
       });
 
       this.get("/items", (schema, request) => {
-        let id = request.queryParams.groupId
-        return schema.where('item', {groupId : id})
+        // let id = request.queryParams.groupId
+        // return schema.where('item', {groupId : id})
+        return schema.where('item', request.queryParams)
       });
+
+      this.post("/items", (schema, request) => {
+        let payload = JSON.parse(request.requestBody)
+        schema.create('item', payload)
+        return schema.all('item')
+      })
+
+      this.put("/items/:id", (schema, request) => {
+        let id = request.params.id
+        let post = schema.findBy('item', {id : id})
+        if (post) {
+          return post
+        } else {
+          return {msg : "404 not found"}
+        }
+      })
     },
 
   });

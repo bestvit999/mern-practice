@@ -24,6 +24,24 @@ export class nodeServiceImplement {
         return data
     }
 
+    async getItemQuery( query : object) : Promise<Array<IItem>> {
+        const data = axios.get('/items', { params : query }).then(
+            (res: { data: any; }) => {
+                return res.data.items
+            }
+        )
+        return data
+    }
+
+    async postItem( payload : IItem ) {
+        const data = axios.post(`/items`, payload).then(
+            (res: { data: any; }) => {
+                return res.data.items
+            }
+        )
+        return data
+    }
+
     getShops() {
         axios.get('/shops').then(
             (res: { data: any; }) => {
